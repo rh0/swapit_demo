@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * Implements hook_nodejs_handlers_info().  This tells the nodejs module what
+ * our client listener is.
+ */
+function nodejs_headerswap_nodejs_handlers_info() {
+  return array(
+    drupal_get_path('module', 'nodejs_headerswap').'/nodejs_headerswap.client.js',
+  );
+}
+
+/**
+ * Lets just throw it all on a page.
+ */
+function nodejs_headerswap_menu() {
+  $items['swap'] = array(
+    'title' => t('SWAP IT!'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('nodejs_headerswap_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Building our simple form.
+ */
+function nodejs_headerswap_form($form, &$form_state) {
+  //grab the current global value for our header.
+  $default_message = variable_get('demo_message', 'Change Me!');
+  //This is the header we are going to change.  Just throwing it in the form
+  //for ease, but really it could live anywhere.
+  $form['stage'] = array(
+    '#markup' => '<h3 id="nodejs-selector">'.$default_message.'</h3>',
+  );
+
+  $form['user_message'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Node message.'),
+    '#size' => 40,
+    '#maxlength' => 80,
+    '#required' => TRUE,
+    '#description' => t('Enter some text to change the above header.  Limit is 80 chars.'),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Swap that Header'),
+    '#submit' => array('nodejs_headerswap_swap_submit'),
+  );
+  return $form;
+}
+
+/**
+ * The submit function for our form. Where the "magic" is happening.
+ */
+function nodejs_headerswap_swap_submit($form, &$form_state) {
+  //just doing a quick variable set to store the string.
+  variable_set('demo_message', $form_state['values']['user_message']);
+  //broadcasting the string to our listening javascript in waiting
+  $message = new stdClass();
+  $message->broadcast = TRUE;
+  $message->data['subject'] = 'headerChange';
+  $message->data['body'] = $form_state['values']['user_message'];
+  $message->callback = 'HeaderSwap';
+  nodejs_send_message($message);
+}

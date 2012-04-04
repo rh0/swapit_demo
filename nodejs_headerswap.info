@@ -1,0 +1,7 @@
+name = Header Text Swap
+description = Very simple implementation of the node.js integration module.
+package = Nodejs
+version = VERSION
+core = 7.x
+
+dependencies[] = nodejs
