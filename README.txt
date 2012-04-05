@@ -15,5 +15,5 @@ Setup
 
 3.  Make sure your node server is running.
 
-4.  Go to mysite.com/swap and check it out!  Use a couple of sessions the
-    node-ey goodness.
+4.  Go to mysite.com/swap and check it out!  Use a couple of sessions 
+    to see the node-ey goodness.
