@@ -4,20 +4,20 @@
  * Implements hook_nodejs_handlers_info().  This tells the nodejs module what
  * our client listener is.
  */
-function nodejs_headerswap_nodejs_handlers_info() {
+function swapit_demo_nodejs_handlers_info() {
   return array(
-    drupal_get_path('module', 'nodejs_headerswap').'/nodejs_headerswap.client.js',
+    drupal_get_path('module', 'swapit_demo').'/swapit_demo.client.js',
   );
 }
 
 /**
  * Lets just throw it all on a page.
  */
-function nodejs_headerswap_menu() {
+function swapit_demo_menu() {
   $items['swap'] = array(
     'title' => t('SWAP IT!'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('nodejs_headerswap_form'),
+    'page arguments' => array('swapit_demo_form'),
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
   );
@@ -28,7 +28,7 @@ function nodejs_headerswap_menu() {
 /**
  * Building our simple form.
  */
-function nodejs_headerswap_form($form, &$form_state) {
+function swapit_demo_form($form, &$form_state) {
   //grab the current global value for our header.
   $default_message = variable_get('demo_message', 'Change Me!');
   //This is the header we are going to change.  Just throwing it in the form
@@ -48,22 +48,24 @@ function nodejs_headerswap_form($form, &$form_state) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Swap that Header'),
-    '#submit' => array('nodejs_headerswap_swap_submit'),
+    '#submit' => array('swapit_demo_swap_submit'),
   );
   return $form;
 }
 
 /**
- * The submit function for our form. Where the "magic" is happening.
+ * The submit function for our form. Where we fire the message.  Its not very
+ * pretty to have all this in the submit fucntion, but for the sake of
+ * demonstration it makes things a bit more obvious.
  */
-function nodejs_headerswap_swap_submit($form, &$form_state) {
+function swapit_demo_swap_submit($form, &$form_state) {
   //just doing a quick variable set to store the string.
   variable_set('demo_message', $form_state['values']['user_message']);
   //broadcasting the string to our listening javascript in waiting
   $message = new stdClass();
   $message->broadcast = TRUE;
-  $message->data['subject'] = 'headerChange';
+  $message->data['subject'] = '';
   $message->data['body'] = $form_state['values']['user_message'];
-  $message->callback = 'HeaderSwap';
+  $message->callback = 'swapIt';
   nodejs_send_message($message);
 }
