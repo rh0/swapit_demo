@@ -65,7 +65,7 @@ function swapit_demo_swap_submit($form, &$form_state) {
   $message = new stdClass();
   $message->broadcast = TRUE;
   $message->data['subject'] = '';
-  $message->data['body'] = $form_state['values']['user_message'];
+  $message->data['body'] = check_plain($form_state['values']['user_message']);
   $message->callback = 'swapIt';
   nodejs_send_message($message);
 }
