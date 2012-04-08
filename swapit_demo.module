@@ -49,7 +49,26 @@ function swapit_demo_form($form, &$form_state) {
     '#type' => 'submit',
     '#value' => t('Swap that Header'),
     '#submit' => array('swapit_demo_swap_submit'),
+    //adding ajax to keep the user submitting from suffering a pageload
+    '#ajax' => array(
+      'callback' => 'swapit_demo_swap_js',
+      'wrapper' => 'swapit-demo-form',
+      'method' => 'replace',
+    ),
   );
+  return $form;
+}
+
+/**
+ * Our ajax callback.  Were replacing the form wrapper with the modified form
+ * itself.  Just after calling out actual submit function, that sends our message
+ * and performs the variable_set.
+ */
+function swapit_demo_swap_js($form, $form_state) {
+  swapit_demo_swap_submit($form, $form_state);
+
+  $form['stage']['#markup'] = '<h3 id="nodejs-selector">'.$form_state['values']['user_message'].'</h3>';
+  $form['user_message']['#value'] = '';
   return $form;
 }
 
@@ -59,13 +78,14 @@ function swapit_demo_form($form, &$form_state) {
  * demonstration it makes things a bit more obvious.
  */
 function swapit_demo_swap_submit($form, &$form_state) {
+  $user_msg = check_plain($form_state['values']['user_message']);
   //just doing a quick variable set to store the string.
-  variable_set('demo_message', $form_state['values']['user_message']);
+  variable_set('demo_message', $user_msg);
   //broadcasting the string to our listening javascript in waiting
   $message = new stdClass();
   $message->broadcast = TRUE;
   $message->data['subject'] = '';
-  $message->data['body'] = check_plain($form_state['values']['user_message']);
+  $message->data['body'] = $user_msg;
   $message->callback = 'swapIt';
   nodejs_send_message($message);
 }
