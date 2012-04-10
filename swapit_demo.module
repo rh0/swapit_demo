@@ -10,6 +10,10 @@ function swapit_demo_nodejs_handlers_info() {
   );
 }
 
+/**
+ * Implementation of hook_nodejs_user_channels
+ * In this instance we just give the swapit_demo channel to everyone.
+ */
 function swapit_demo_nodejs_user_channels($auth_user) {
   $channels = array('swapit_demo');
   return $channels;
