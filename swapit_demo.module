@@ -10,6 +10,11 @@ function swapit_demo_nodejs_handlers_info() {
   );
 }
 
+function swapit_demo_nodejs_user_channels($auth_user) {
+  $channels = array('swapit_demo');
+  return $channels;
+}
+
 /**
  * Lets just throw it all on a page.
  */
@@ -83,8 +88,8 @@ function swapit_demo_swap_submit($form, &$form_state) {
   variable_set('demo_message', $user_msg);
   //broadcasting the string to our listening javascript in waiting
   $message = new stdClass();
+  $message->channel = 'swapit_demo';
   $message->broadcast = TRUE;
-  $message->data['subject'] = '';
   $message->data['body'] = $user_msg;
   $message->callback = 'swapIt';
   nodejs_send_message($message);
