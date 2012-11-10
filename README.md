@@ -1,6 +1,6 @@
 #SwapIt Demonstration
 
-This module is a simple demonstration of how to build a custom module utilizing the nodeJS integration module.  For more information on how this module works please visit my post on [module development with Drupal and NodeJS](http://theoleschool.com/blog/module-development-nodejs-integration).
+This module is a simple demonstration of how to build a custom module utilizing the [nodeJS integration module](http://drupal.org/project/nodejs).  For more information on how this module works check out [_Module Development with Drupal and NodeJS_](http://theoleschool.com/blog/module-development-nodejs-integration).  The example code in the post is taken directly from this module.
 
 ##Setup
 
